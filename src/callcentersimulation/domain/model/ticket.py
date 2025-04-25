@@ -52,14 +52,6 @@ class Ticket(BaseModel):
     processing_time: Optional[float] = None
     execution_id: UUIDType
 
-    @field_validator("assigned_agent_id", mode="after")
-    @classmethod
-    def validate_agent_assignment(cls, v: Optional[UUID], info: ValidationInfo) -> Optional[UUID]:
-        status = info.data.get("status")
-        if status in [TicketStatus.ASSIGNED, TicketStatus.IN_PROGRESS] and v is None:
-            raise ValueError("Se requiere ID de agente para estados asignados")
-        return v
-
     @field_validator("assignment_date", mode="after")
     @classmethod
     def validate_assignment_date(cls, v: Optional[datetime], info: ValidationInfo) -> datetime:
@@ -78,5 +70,5 @@ class Ticket(BaseModel):
     @classmethod
     def validate_execution_id(cls, v: UUID) -> UUID:
         if v.version is None:
-            raise ValueError("ID de ejecución inválido")
+            raise ValueError("Invalid run ID")
         return v

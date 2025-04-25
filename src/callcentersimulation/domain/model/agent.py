@@ -1,8 +1,7 @@
 from enum import Enum
 from typing import Optional
 
-from pydantic import Field
-from pydantic.v1 import BaseModel
+from pydantic import Field, BaseModel
 from uuid import UUID, uuid4
 
 class AgentStatus(str, Enum):

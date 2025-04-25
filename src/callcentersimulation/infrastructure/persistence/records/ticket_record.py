@@ -26,15 +26,16 @@ class TicketRecord(Base):
 
     @classmethod
     def from_domain(cls, ticket: Ticket) -> 'TicketRecord':
+        assigned_agent_id = ticket.agent.id if ticket.agent is not None else None
         return cls(
             id=ticket.id,
             execution_id=ticket.execution_id,
             priority=ticket.priority,
             creation_date=ticket.creation_date,
-            assigned_agent_id=ticket.agent.id,
+            assigned_agent_id=assigned_agent_id,
             assignment_date=ticket.assignment_date,
             resolution_date=ticket.resolution_date,
-            resolution_time=ticket.resolution_time,
+            resolution_time=ticket.processing_time,
             status=ticket.status.value
 
         )
@@ -48,6 +49,6 @@ class TicketRecord(Base):
             agent=Agent(id=self.assigned_agent_id),
             assignment_date=self.assignment_date,
             resolution_date=self.resolution_date,
-            resolution_time=self.resolution_time,
+            processing_time=self.resolution_time,
             status=TicketStatus(self.status)
         )

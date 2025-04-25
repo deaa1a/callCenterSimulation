@@ -14,3 +14,8 @@ class TicketRepository(ABC):
     async def get_by_execution_id(self, execution_id: UUID) -> List[Ticket]:
         pass
 
+    @abstractmethod
+    async def update(self, tickets: List[Ticket]):
+        pass
+
+

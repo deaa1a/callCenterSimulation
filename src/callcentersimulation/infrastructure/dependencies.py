@@ -11,8 +11,9 @@ from callcentersimulation.application.get_specific_number_available_agents_use_c
 from callcentersimulation.application.get_tickets_by_execution_id_use_case import GetTicketByExecutionIdUseCase
 from callcentersimulation.application.process_ticket_use_case import ProcessTicketUseCase
 from callcentersimulation.application.process_tickets_use_case import ProcessTicketsUseCase
+from callcentersimulation.application.update_tickets_use_case import UpdateTicketsUseCase
 from callcentersimulation.infrastructure.persistence.adapters.sql_agent_repository import SQLAgentRepository
-from src.callcentersimulation.application.create_ticket_use_case import CreateTicketUseCase
+from src.callcentersimulation.application.create_tickets_use_case import CreateTicketUseCase
 from src.callcentersimulation.infrastructure.persistence.adapters.sql_ticket_repository import SQLTicketRepository
 from src.callcentersimulation.infrastructure.persistence.conf.database import AsyncSessionLocal
 from src.callcentersimulation.infrastructure.utils.csv_ticket_processor import CsvTicketProcessor
@@ -35,16 +36,21 @@ def get_ticket_by_execution_id_use_case(
     repo: Annotated[SQLTicketRepository, Depends(get_ticket_repo)]) -> GetTicketByExecutionIdUseCase:
     return GetTicketByExecutionIdUseCase(repo)
 
+def get_update_tickets_use_case(
+    repo: Annotated[SQLTicketRepository, Depends(get_ticket_repo)]
+) -> UpdateTicketsUseCase:
+    return UpdateTicketsUseCase(repo)
+
 def get_csv_processor() -> CsvTicketProcessor:
     return CsvTicketProcessor(execution_id=uuid4())
 
 def get_available_agents_use_case(
-    repo: Annotated[SQLAgentRepository, Depends(get_ticket_repo)]
+    repo: Annotated[SQLAgentRepository, Depends(get_agent_repo)]
 ) -> GetSpecificNumberAvailableAgentsUseCase:
     return GetSpecificNumberAvailableAgentsUseCase(repo)
 
 def get_create_agent_use_case(
-    repo: Annotated[SQLAgentRepository, Depends(get_ticket_repo)]
+    repo: Annotated[SQLAgentRepository, Depends(get_agent_repo)]
 ) -> CreateAgentUseCase:
     return CreateAgentUseCase(repo)
 
@@ -58,11 +64,13 @@ def get_process_tickets_use_case(
     get_ticket_by_execution_id: Annotated[GetTicketByExecutionIdUseCase, Depends(get_ticket_by_execution_id_use_case)],
     get_available_agents: Annotated[GetSpecificNumberAvailableAgentsUseCase, Depends(get_available_agents_use_case)],
     create_concurrent_list: Annotated[CreateConcurrentListUseCase, Depends(get_create_concurrent_list_use_case)],
-    process_ticket: Annotated[ProcessTicketUseCase, Depends(get_process_ticket_use_case)]
+    process_ticket: Annotated[ProcessTicketUseCase, Depends(get_process_ticket_use_case)],
+    update_tickets: Annotated[UpdateTicketsUseCase, Depends(get_update_tickets_use_case)],
 ) -> ProcessTicketsUseCase:
     return ProcessTicketsUseCase(
         get_ticket_by_execution_id=get_ticket_by_execution_id,
         get_available_agents=get_available_agents,
         create_concurrent_list=create_concurrent_list,
-        process_ticket=process_ticket
+        process_ticket=process_ticket,
+        update_tickets=update_tickets
     )

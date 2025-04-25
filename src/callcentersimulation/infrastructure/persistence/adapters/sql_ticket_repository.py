@@ -30,3 +30,27 @@ class SQLTicketRepository(TicketRepository):
             self._session.add_all(entities)
             await self._session.flush(entities)
         return [entity.to_domain() for entity in entities]
+
+
+    async def get_by_execution_id(self, execution_id: UUID) -> List[Ticket]:
+        stmt = select(TicketRecord).where(
+            TicketRecord.execution_id == execution_id
+        )
+        result = await self._session.execute(stmt)
+        records = result.scalars().all()
+        return [record.to_domain() for record in records]
+
+
+    async def update(self, tickets: list[Ticket]):
+        async with self._transaction_manager():
+            for ticket in tickets:
+                record = await self._session.get(TicketRecord, ticket.id)
+
+                record.priority = ticket.priority
+                record.status = ticket.status
+                record.assigned_agent_id = ticket.agent.id if ticket.agent else None
+                record.assignment_date = ticket.assignment_date
+                record.resolution_date = ticket.resolution_date
+                record.resolution_time = ticket.processing_time
+
+            await self._session.flush()

@@ -15,11 +15,11 @@ async def upload_tickets(
 ):
     try:
 
-        agent_id = await use_case.execute(agent_dto.to_domain())
+        agent = await use_case.execute(agent_dto.to_domain())
 
         return {
             "message": "Agent created successfully",
-            "agent_id": agent_id
+            "agent": agent
         }
 
     except Exception as e:
