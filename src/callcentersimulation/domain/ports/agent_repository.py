@@ -1,33 +1,19 @@
 from abc import ABC, abstractmethod
-from typing import List, Optional
-from uuid import UUID
-from domain.model.agent import Agent, AgentStatus
+from typing import List
+
+from callcentersimulation.domain.model.agent import Agent
+
 
 class AgentRepository(ABC):
     @abstractmethod
     async def save(self, agent: Agent) -> Agent:
         pass
-    
+
     @abstractmethod
-    async def get_available(self) -> List[Agent]:
+    async def get_available_agents(self) -> List[Agent]:
         pass
-    
+
     @abstractmethod
-    async def get_by_id(self, agent_id: UUID) -> Optional[Agent]:
+    async def get_available_agents_by_demand(self, number: int) -> List[Agent]:
         pass
-    
-    @abstractmethod
-    async def update_status(self, 
-                          agent_id: UUID, 
-                          status: AgentStatus) -> Agent:
-        pass
-    
-    @abstractmethod
-    async def assign_ticket(self, 
-                          agent_id: UUID, 
-                          ticket_id: UUID) -> Agent:
-        pass
-    
-    @abstractmethod
-    async def complete_ticket(self, agent_id: UUID) -> Agent:
-        pass
+

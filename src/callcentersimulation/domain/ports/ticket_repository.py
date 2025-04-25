@@ -9,3 +9,8 @@ class TicketRepository(ABC):
     @abstractmethod
     async def save_batch(self, tickets: List[Ticket]) -> List[Ticket]:
         pass
+
+    @abstractmethod
+    async def get_by_execution_id(self, execution_id: UUID) -> List[Ticket]:
+        pass
+

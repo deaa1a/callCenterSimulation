@@ -1,6 +1,6 @@
 from datetime import datetime
 from enum import IntEnum, Enum
-from uuid import UUID, uuid4
+from uuid import UUID
 from typing import Optional, Annotated
 from pydantic import (
     BaseModel,
@@ -11,9 +11,12 @@ from pydantic import (
     AfterValidator
 )
 
+from callcentersimulation.domain.model.agent import Agent
+
+
 def check_uuid_format(value: UUID) -> UUID:
     if not isinstance(value, UUID):
-        raise ValueError("Formato UUID inválido")
+        raise ValueError("Invalid UUID format")
     return value
 
 UUIDType = Annotated[UUID, AfterValidator(check_uuid_format)]
@@ -43,9 +46,10 @@ class Ticket(BaseModel):
     creation_date: datetime = Field(default_factory=datetime.now)
     priority: TicketPriority
     status: TicketStatus = TicketStatus.PENDING
-    assigned_agent_id: Optional[UUIDType] = None
+    agent: Optional[Agent] = None
     assignment_date: Optional[datetime] = None
     resolution_date: Optional[datetime] = None
+    processing_time: Optional[float] = None
     execution_id: UUIDType
 
     @field_validator("assigned_agent_id", mode="after")
