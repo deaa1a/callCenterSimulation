@@ -2,6 +2,16 @@
 
 A simulation of a call center using FastAPI and PostgreSQL.
 
+###  Results
+
+There are two short videos, one with the demo and the other with a brief explanation of the implementation of the challenge agents.
+
+Demo.mov (4:18)
+Arquitectura.mov (3:57) 
+
+number of **results** are the output results of running the 3 agent cases
+
+
 ## Prerequisites
 
 - Docker
@@ -41,3 +51,4 @@ uvicorn src.callcentersimulation.main:app --reload --app-dir .
 ```
 
 Alternatively, you can run the application using runserver.py if you are working within PyCharm.
+
